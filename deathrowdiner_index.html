@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Death Row Diner | Case File DRD-0001</title>
+  <meta name="description" content="Death Row Diner — a classified dining experience currently under lock and key." />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Inter:wght@300;400;500;700;900&display=swap');
+
+    :root {
+      --black: #050505;
+      --panel: #0d0a09;
+      --cream: #e8dcc9;
+      --muted: #8f877b;
+      --dim: #5f5850;
+      --red: #c9362b;
+      --yellow: #b9952e;
+      --line: rgba(232, 220, 201, 0.14);
+      --line-red: rgba(201, 54, 43, 0.55);
+      --shadow: rgba(0, 0, 0, 0.75);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--cream);
+      background:
+        radial-gradient(circle at 50% -10%, rgba(201, 54, 43, 0.16), transparent 38%),
+        radial-gradient(circle at 20% 20%, rgba(185, 149, 46, 0.05), transparent 26%),
+        linear-gradient(180deg, #030303 0%, #090909 42%, #050505 100%);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      opacity: 0.42;
+      background: repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0px, rgba(255,255,255,0.018) 1px, transparent 1px, transparent 4px);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(0,0,0,0.65), transparent 22%, transparent 78%, rgba(0,0,0,0.65)),
+        radial-gradient(circle at center, transparent 45%, rgba(0,0,0,0.62) 100%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.08;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 260 260' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 4vw, 64px);
+      background: rgba(4, 4, 4, 0.88);
+      border-bottom: 1px solid rgba(232, 220, 201, 0.08);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-family: "Bebas Neue", sans-serif;
+    }
+
+    .brand .case { color: var(--red); font-size: 13px; letter-spacing: 0.28em; }
+    .brand .divider { width: 1px; height: 18px; background: rgba(232, 220, 201, 0.28); }
+    .brand .name { font-size: 21px; color: var(--cream); }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: clamp(18px, 4vw, 44px);
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .nav a:hover { color: var(--cream); }
+    .nav .cta { color: var(--red); border: 1px solid rgba(201, 54, 43, 0.55); padding: 12px 22px; }
+    .nav .cta:hover { background: var(--red); color: white; }
+
+    .hamburger {
+      display: none;
+      width: 30px;
+      height: 22px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      position: relative;
+    }
+
+    .hamburger span,
+    .hamburger::before,
+    .hamburger::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 1px;
+      background: var(--muted);
+      position: absolute;
+      left: 0;
+    }
+    .hamburger::before { top: 0; }
+    .hamburger span { top: 10px; }
+    .hamburger::after { bottom: 0; }
+
+    .hero {
+      min-height: calc(100vh - 76px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 90px 22px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.2), rgba(0,0,0,0.78)),
+        radial-gradient(circle at 50% 20%, rgba(232,220,201,0.08), transparent 36%);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.19;
+      background:
+        linear-gradient(120deg, transparent 7%, rgba(255,255,255,0.14) 8%, transparent 16%),
+        linear-gradient(120deg, transparent 28%, rgba(255,255,255,0.13) 29%, transparent 34%),
+        linear-gradient(120deg, transparent 52%, rgba(255,255,255,0.12) 53%, transparent 58%),
+        linear-gradient(120deg, transparent 75%, rgba(255,255,255,0.14) 76%, transparent 82%);
+      filter: blur(1px);
+      transform: skewY(-4deg) scale(1.15);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 180px;
+      background: linear-gradient(180deg, transparent, var(--black));
+    }
+
+    .hero-inner { position: relative; z-index: 2; max-width: 980px; width: 100%; }
+
+    .classified-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    .tag { border: 1px solid var(--line-red); color: var(--red); padding: 8px 14px; background: rgba(8, 8, 8, 0.72); }
+    .tag.gold { border-color: rgba(185, 149, 46, 0.55); color: var(--yellow); }
+
+    h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(88px, 14vw, 190px);
+      line-height: 0.88;
+      letter-spacing: 0.055em;
+      margin: 0;
+      color: var(--cream);
+      text-shadow: 0 24px 70px rgba(0,0,0,0.8);
+    }
+
+    .rule {
+      width: 130px;
+      height: 1px;
+      margin: 42px auto 26px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      position: relative;
+    }
+    .rule::after {
+      content: "";
+      width: 5px;
+      height: 5px;
+      background: var(--red);
+      position: absolute;
+      left: 50%;
+      top: -2px;
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    .subtitle {
+      font-family: "Special Elite", monospace;
+      font-size: clamp(16px, 2vw, 22px);
+      color: var(--muted);
+      margin: 0 auto 18px;
+      max-width: 760px;
+      line-height: 1.7;
+    }
+
+    .slogan {
+      font-family: "Bebas Neue", sans-serif;
+      color: var(--red);
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: 0.16em;
+      margin: 0 0 46px;
+      text-transform: uppercase;
+    }
+
+    .buttons { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 190px;
+      height: 58px;
+      padding: 0 28px;
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      border: 1px solid rgba(232, 220, 201, 0.16);
+      background: transparent;
+      color: var(--cream);
+      cursor: pointer;
+      transition: 180ms ease;
+    }
+    .button.primary { background: var(--red); border-color: var(--red); color: white; }
+    .button:hover { transform: translateY(-2px); border-color: var(--red); box-shadow: 0 18px 45px rgba(0,0,0,0.38); }
+
+    section {
+      position: relative;
+      padding: clamp(88px, 11vw, 160px) 22px;
+      border-top: 1px solid rgba(232, 220, 201, 0.06);
+    }
+    .container { max-width: 1180px; margin: 0 auto; }
+    .center { text-align: center; }
+
+    .eyebrow {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      font-size: 14px;
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(50px, 6vw, 82px);
+      line-height: 0.96;
+      letter-spacing: 0.06em;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .type-copy {
+      font-family: "Special Elite", monospace;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 21px);
+      line-height: 2.05;
+      margin: 38px auto 0;
+      max-width: 780px;
+    }
+    .italic { font-style: italic; color: var(--dim); margin-top: 26px; }
+
+    .file-wrap { max-width: 760px; margin: 0 auto; position: relative; }
+    .file-card {
+      position: relative;
+      padding: clamp(34px, 5vw, 72px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.018), transparent), radial-gradient(circle at 20% 10%, rgba(201, 54, 43, 0.05), transparent 30%), var(--panel);
+      border: 1px solid rgba(232, 220, 201, 0.14);
+      box-shadow: 0 40px 100px var(--shadow);
+      overflow: hidden;
+    }
+    .file-card::before,
+    .file-card::after {
+      content: "";
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      border-color: var(--red);
+      border-style: solid;
+      opacity: 0.85;
+    }
+    .file-card::before { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+    .file-card::after { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+    .file-small {
+      font-family: "Special Elite", monospace;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      line-height: 1.9;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    .notice {
+      font-family: "Bebas Neue", sans-serif;
+      color: var(--red);
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .file-title {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: clamp(34px, 5vw, 50px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0 28px;
+    }
+
+    .roadmap {
+      list-style: none;
+      padding: 34px 0 28px;
+      margin: 34px 0 0;
+      border-top: 1px solid rgba(232,220,201,0.09);
+      border-bottom: 1px solid rgba(232,220,201,0.09);
+      display: grid;
+      gap: 24px;
+    }
+    .roadmap li { display: grid; grid-template-columns: 42px 1fr; align-items: baseline; gap: 22px; font-family: "Bebas Neue", sans-serif; text-transform: uppercase; }
+    .roadmap .num { color: var(--red); letter-spacing: 0.16em; font-size: 14px; text-align: right; }
+    .roadmap .step { color: var(--cream); font-size: clamp(24px, 3vw, 32px); letter-spacing: 0.12em; }
+
+    .sealed-row { display: flex; justify-content: space-between; gap: 18px; align-items: center; margin-top: 34px; }
+    .no-release { font-family: "Bebas Neue", sans-serif; color: var(--red); letter-spacing: 0.18em; text-transform: uppercase; font-size: 20px; }
+    .seal { font-family: "Bebas Neue", sans-serif; color: var(--yellow); border: 1px solid rgba(185,149,46,0.7); padding: 9px 13px; letter-spacing: 0.16em; text-transform: uppercase; }
+
+    .intake-grid { display: grid; grid-template-columns: 0.82fr 1.18fr; gap: clamp(40px, 8vw, 110px); align-items: start; }
+    .form-copy { margin-top: 34px; max-width: 420px; font-family: "Special Elite", monospace; color: var(--muted); line-height: 1.8; font-size: 17px; }
+    form { display: grid; gap: 16px; }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(232, 220, 201, 0.14);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--cream);
+      padding: 18px 18px;
+      font-family: "Special Elite", monospace;
+      font-size: 16px;
+      outline: none;
+      transition: 160ms ease;
+    }
+    textarea { min-height: 150px; resize: vertical; }
+    input:focus, textarea:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(201, 54, 43, 0.13); }
+    ::placeholder { color: rgba(232, 220, 201, 0.58); }
+
+    .submit {
+      border: 0;
+      background: var(--red);
+      color: white;
+      height: 62px;
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.17em;
+      text-transform: uppercase;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 160ms ease;
+    }
+    .submit:hover { background: #e04438; transform: translateY(-1px); }
+
+    .success {
+      display: none;
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid rgba(185, 149, 46, 0.44);
+      color: var(--yellow);
+      font-family: "Special Elite", monospace;
+      background: rgba(185, 149, 46, 0.06);
+    }
+
+    footer { border-top: 1px solid rgba(232, 220, 201, 0.07); padding: 44px 22px; text-align: center; background: rgba(0,0,0,0.25); }
+    footer .footer-main { font-family: "Bebas Neue", sans-serif; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); font-size: 18px; }
+    footer .footer-small { margin-top: 16px; font-family: "Special Elite", monospace; color: #3f3b37; font-size: 13px; letter-spacing: 0.1em; }
+
+    @media (max-width: 860px) {
+      .nav { display: none; }
+      .hamburger { display: block; }
+      .brand .name { font-size: 18px; }
+      .brand .case { font-size: 11px; }
+      .hero { min-height: 740px; }
+      .intake-grid { grid-template-columns: 1fr; }
+      .roadmap li { grid-template-columns: 34px 1fr; gap: 16px; }
+      .sealed-row { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 520px) {
+      .topbar { height: 66px; padding-inline: 16px; }
+      .brand { gap: 10px; }
+      .brand .case { display: none; }
+      h1 { font-size: 86px; }
+      .button { width: 100%; }
+      .file-card { padding: 30px 22px; }
+      .roadmap .step { font-size: 22px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Death Row Diner home">
+      <span class="case">DRD-0001</span>
+      <span class="divider"></span>
+      <span class="name">Death Row Diner</span>
+    </a>
+
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#file">The File</a>
+      <a href="#roadmap">Roadmap</a>
+      <a class="cta" href="#intake">Submit Intake</a>
+    </nav>
+
+    <button class="hamburger" aria-label="Menu"><span></span></button>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-label="Death Row Diner teaser">
+      <div class="hero-inner">
+        <div class="classified-row">
+          <span class="tag">Case File: DRD-0001</span>
+          <span class="tag gold">Status: Sealed</span>
+        </div>
+
+        <h1>Death Row<br />Diner</h1>
+
+        <div class="rule"></div>
+
+        <p class="subtitle">A classified dining experience currently under lock and key.</p>
+        <p class="slogan">Enjoy Your Time Served.</p>
+
+        <div class="buttons">
+          <a class="button primary" href="#intake">Submit Intake</a>
+          <a class="button" href="#file">View the Notice</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="file" class="center">
+      <div class="container">
+        <div class="eyebrow">— Restricted —</div>
+        <h2>Something is being prepared<br />behind the walls.</h2>
+        <div class="rule"></div>
+
+        <div class="type-copy">
+          The name has been recorded.<br />
+          The concept has been marked restricted.<br />
+          The first service has not been authorized.
+          <div class="italic">For now, the file remains sealed.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap">
+      <div class="container">
+        <div class="file-wrap">
+          <article class="file-card">
+            <div class="notice">Official Notice — Do Not Distribute</div>
+            <h2 class="file-title">Death Row Diner</h2>
+
+            <div class="file-small">
+              REF: DRD-0001<br />
+              CLASSIFICATION: RESTRICTED<br />
+              STATUS: DEVELOPMENT ROADMAP SEALED
+            </div>
+
+            <ol class="roadmap">
+              <li><span class="num">01.</span><span class="step">Intake</span></li>
+              <li><span class="num">02.</span><span class="step">Identity Lock</span></li>
+              <li><span class="num">03.</span><span class="step">Legal Review</span></li>
+              <li><span class="num">04.</span><span class="step">Menu Development</span></li>
+              <li><span class="num">05.</span><span class="step">Site Search</span></li>
+              <li><span class="num">06.</span><span class="step">The Room</span></li>
+              <li><span class="num">07.</span><span class="step">The Collection</span></li>
+              <li><span class="num">08.</span><span class="step">Operations Lockdown</span></li>
+              <li><span class="num">09.</span><span class="step">Controlled Release</span></li>
+              <li><span class="num">10.</span><span class="step">First Service</span></li>
+              <li><span class="num">11.</span><span class="step">Sentence Extended</span></li>
+            </ol>
+
+            <div class="sealed-row">
+              <div class="no-release">No Early Release.</div>
+              <div class="seal">Sealed</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="intake">
+      <div class="container">
+        <div class="intake-grid">
+          <div>
+            <div class="notice">Form DRD-01 — Visitor Intake</div>
+            <h2>Visitor<br />Intake</h2>
+            <div class="rule" style="margin-left: 0;"></div>
+            <p class="form-copy">
+              Submit visitor information below.<br />
+              Approved names will be held on file.<br />
+              Further instructions may follow.
+            </p>
+          </div>
+
+          <div>
+            <form id="visitorForm">
+              <input type="text" name="name" placeholder="Name" autocomplete="name" />
+              <input type="email" name="email" placeholder="Email *" autocomplete="email" required />
+              <input type="text" name="city" placeholder="City / State" autocomplete="address-level2" />
+              <textarea name="message" placeholder="Message"></textarea>
+              <button class="submit" type="submit">Submit Intake</button>
+            </form>
+
+            <div class="success" id="successMessage">Intake received. Await further instructions.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-main">Death Row Diner — Enjoy Your Time Served.</div>
+    <div class="footer-small">Concept under development. Details intentionally withheld.</div>
+  </footer>
+
+  <script>
+    const form = document.getElementById("visitorForm");
+    const success = document.getElementById("successMessage");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const data = new FormData(form);
+      const email = data.get("email");
+      if (!email) return;
+      form.reset();
+      success.style.display = "block";
+      setTimeout(() => {
+        success.style.display = "none";
+      }, 6000);
+    });
+  </script>
+</body>
+</html>
