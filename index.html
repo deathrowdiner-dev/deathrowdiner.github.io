@@ -534,15 +534,19 @@
           </div>
 
           <div>
-            <form id="visitorForm">
+            <form action="https://formsubmit.co/thedeathrowdiner@gmail.com" method="POST">
+              <input type="hidden" name="_subject" value="New Death Row Diner Visitor Intake" />
+              <input type="hidden" name="_template" value="table" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_next" value="https://deathrowdiner.com/thanks.html" />
+              <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
               <input type="text" name="name" placeholder="Name" autocomplete="name" />
               <input type="email" name="email" placeholder="Email *" autocomplete="email" required />
-              <input type="text" name="city" placeholder="City / State" autocomplete="address-level2" />
+              <input type="text" name="city_state" placeholder="City / State" autocomplete="address-level2" />
               <textarea name="message" placeholder="Message"></textarea>
               <button class="submit" type="submit">Submit Intake</button>
             </form>
-
-            <div class="success" id="successMessage">Intake received. Await further instructions.</div>
           </div>
         </div>
       </div>
@@ -554,21 +558,5 @@
     <div class="footer-small">Concept under development. Details intentionally withheld.</div>
   </footer>
 
-  <script>
-    const form = document.getElementById("visitorForm");
-    const success = document.getElementById("successMessage");
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-      const data = new FormData(form);
-      const email = data.get("email");
-      if (!email) return;
-      form.reset();
-      success.style.display = "block";
-      setTimeout(() => {
-        success.style.display = "none";
-      }, 6000);
-    });
-  </script>
 </body>
 </html>
