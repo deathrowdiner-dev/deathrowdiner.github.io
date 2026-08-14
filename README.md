@@ -9,7 +9,7 @@ The site uses an "Institutional Americana" design system: correctional paperwork
 ## Architecture
 
 - `index.html` — main experience
-- `assets/css/styles.css` — complete responsive design system
+- `assets/css/styles.css` — stylesheet entry point; ordered `styles-1.css` through `styles-4.css` modules contain the responsive design system
 - `assets/js/core.js` — pure/testable record + Final Meal helpers
 - `assets/js/app.js` — progressive interactions
 - `thanks.html` — visitor-intake confirmation

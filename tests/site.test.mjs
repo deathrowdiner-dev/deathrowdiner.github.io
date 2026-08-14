@@ -69,3 +69,23 @@ test('stylesheet includes reduced-motion and focus-visible support', () => {
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /:focus-visible/);
 });
+
+test('custom 404 uses root-relative assets so nested missing URLs stay themed', () => {
+  const html = read('404.html');
+  assert.match(html, /href="\/assets\/css\/styles\.css"/);
+  assert.match(html, /href="\/favicon\.svg"/);
+});
+
+test('site ships a favicon and public Pages build excludes internal development material', () => {
+  assert.equal(existsSync(join(root, 'favicon.svg')), true, 'favicon.svg should exist');
+  assert.equal(existsSync(join(root, '_config.yml')), true, '_config.yml should exist');
+
+  for (const page of ['index.html', 'thanks.html', 'privacy.html', '404.html']) {
+    assert.match(read(page), /rel="icon"[^>]+href="\/favicon\.svg"/i, `${page} should reference the favicon`);
+  }
+
+  const config = read('_config.yml');
+  for (const item of ['docs', 'tests', 'DEVELOPMENT.md', 'README.md']) {
+    assert.match(config, new RegExp(`-\\s+${item.replace('.', '\\.')}`), `${item} should be excluded from Pages`);
+  }
+});

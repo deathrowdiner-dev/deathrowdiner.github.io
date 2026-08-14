@@ -1,0 +1,5 @@
+exclude:
+  - docs
+  - tests
+  - DEVELOPMENT.md
+  - README.md
