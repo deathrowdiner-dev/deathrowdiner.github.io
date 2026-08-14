@@ -1,0 +1,21 @@
+@import url("./styles-1.css");
+@import url("./styles-2.css");
+@import url("./styles-3.css");
+@import url("./styles-4.css");
+
+/* Entry-level accessibility guarantees; module definitions use the same values. */
+:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .case-paper, .order-ticket, .meal-receipt, .stamp, .confirmation-stamp { transform: none; }
+}
